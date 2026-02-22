@@ -11,7 +11,7 @@ from db import init_db, insert_car
 from additional_func import parse_mileage, clean_price
 
 
-BASE_URL = "https://auto.ria.com/uk/search/"
+BASE_URL = os.environ.get("URL")
 MAX_CONCURRENT = 3
 USER_AGENTS = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.5993.90 Safari/537.36",
@@ -58,6 +58,15 @@ async def parse_detail(client, url, sem):
         phone_number = tree.xpath(
             '//button[@data-action="showBottomPopUp"]//span[contains(text(),"(")]/text()'
         )
+
+        print({
+            "username": username[0].strip() if username else None,
+            "phone_number": phone_number[0].strip() if phone_number else None,
+            "image_url": filtered_image[0] if filtered_image else None,
+            "images_count": int(images_count[0].strip()) if images_count else None,
+            "car_number": car_number[0].strip() if car_number else None,
+            "car_vin": car_vin,
+        })
 
         return {
             "username": username[0].strip() if username else None,

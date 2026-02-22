@@ -1,10 +1,12 @@
 import os
 
-from dotenv import load_dotenv
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from sqlalchemy import String, Integer
-from sqlalchemy.dialects.postgresql import insert
+from datetime import datetime, timezone
 
+from dotenv import load_dotenv
+
+from sqlalchemy import String, Integer, DateTime
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 load_dotenv()
@@ -22,7 +24,7 @@ DATABASE_URL = (
 # ---- ENGINE ----
 engine = create_async_engine(
     DATABASE_URL,
-    echo=False,          # Set True for SQL debug
+    echo=True,          # Set True for SQL debug
     pool_size=5,
     max_overflow=10,
 )
@@ -49,6 +51,10 @@ class Car(Base):
     car_number: Mapped[str | None] = mapped_column(String)
     car_vin: Mapped[str | None] = mapped_column(String)
 
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc)
+    )
 
 async def init_db():
     async with engine.begin() as conn:
@@ -62,6 +68,3 @@ async def insert_car(car_data: dict):
         stmt = stmt.on_conflict_do_nothing(index_elements=["url"])
         await session.execute(stmt)
         await session.commit()
-
-
-print(DATABASE_URL)

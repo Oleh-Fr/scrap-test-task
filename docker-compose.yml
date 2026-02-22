@@ -11,6 +11,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - db_data:/var/lib/postgresql/data
+      - ./dumps:/app/dumps
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
@@ -18,17 +19,28 @@ services:
       timeout: 5s
 
   scraper:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
     container_name: python_scraper
     restart: on-failure
     env_file:
       - .env
     depends_on:
-      db:
-        condition: service_healthy
+      - db
+    volumes:
+      - ./dumps:/app/dumps
+    command: python main.py
+
+  scheduler:
+    build: .
+    container_name: python_scheduler
+    restart: on-failure
+    env_file:
+      - .env
+    depends_on:
+      - db
+    volumes:
+      - ./dumps:/app/dumps
+    command: python scheduler.py
 
 volumes:
   db_data:
-
