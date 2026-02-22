@@ -28,8 +28,7 @@ scrap-test-task/
 ├── dump_db.py
 ├── db.py
 ├── additional_func.py
-├── README.md
-└── venv/
+└── README.md
 
 ````
 
