@@ -59,15 +59,6 @@ async def parse_detail(client, url, sem):
             '//button[@data-action="showBottomPopUp"]//span[contains(text(),"(")]/text()'
         )
 
-        print({
-            "username": username[0].strip() if username else None,
-            "phone_number": phone_number[0].strip() if phone_number else None,
-            "image_url": filtered_image[0] if filtered_image else None,
-            "images_count": int(images_count[0].strip()) if images_count else None,
-            "car_number": car_number[0].strip() if car_number else None,
-            "car_vin": car_vin,
-        })
-
         return {
             "username": username[0].strip() if username else None,
             "phone_number": phone_number[0].strip() if phone_number else None,
