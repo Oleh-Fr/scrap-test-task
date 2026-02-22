@@ -24,7 +24,7 @@ DATABASE_URL = (
 # ---- ENGINE ----
 engine = create_async_engine(
     DATABASE_URL,
-    echo=True,          # Set True for SQL debug
+    echo=False,          # Set True for SQL debug
     pool_size=5,
     max_overflow=10,
 )
